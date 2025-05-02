@@ -1,11 +1,12 @@
 import time
 import pandas as pd
-from openpyxl import load_workbook, Workbook
+from openpyxl import load_workbook
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from win10toast import ToastNotifier
 
 class Validador:
     def __init__(self):
@@ -22,12 +23,11 @@ class Validador:
         # Manipulação de Excel - SAIDA - OPENPYXL
         self.planilha_saida = load_workbook("gcpjs_nao_processados.xlsx")
         self.sheet_saida = self.planilha_saida['01']
-        
-        self.logar()
-        self.pesquisar()
-        self.scroll_page()
-        time.sleep(4)
-        # self.achar_arquivos()
+
+        # Notificação
+        self.notificacao = ToastNotifier()
+
+        time.sleep(1)
     
     def logar(self):
         self.navegador.find_element("id", "id_username").send_keys("erickalmeida@barros.adv.br")
@@ -47,18 +47,17 @@ class Validador:
     def pesquisar(self):
         global gcpj
         gcpj = self.ponteiro()
-        print(f'Processo: {gcpj}')
+        print(f'Pesquisando processo: {gcpj}')
 
         self.lupa = self.navegador.find_element("class name", "mdi-magnify").click()
-        # WebDriverWait(self.navegador,7)
         time.sleep(1)
 
         self.search_bar = self.navegador.find_element("id", "main-search")
         self.search_bar.click()
         self.search_bar.send_keys(str(gcpj) + Keys.ENTER)
 
-        # time.sleep(7)
         link_processo =("partial link text", str(gcpj)) #link do processo
+        
         try:
             WebDriverWait(self.navegador, 10).until(
                 EC.presence_of_element_located(link_processo)
@@ -66,10 +65,10 @@ class Validador:
             WebDriverWait(self.navegador,2).until(
                 EC.element_to_be_clickable(link_processo)
             )
+            self.navegador.find_element("partial link text", str(gcpj)).click()
         except:
             print(f"Erro de conexão, não foi possível concluir a pesquisa. GCPJ: {gcpj}")
             
-        self.navegador.find_element("partial link text", str(gcpj)).click()
                             
     def scroll_page(self):
         arquivos = ("link text", "Arquivos")
@@ -84,23 +83,33 @@ class Validador:
 
         campo_de_pastas = self.navegador.find_element("id", "directory-tree")
         pastas = campo_de_pastas.find_elements(By.XPATH, "./*") #seleciona todas as pastas dentro do campo de pastas
-
+        time.sleep(1)
+        
         if not pastas:
             self.armazenar_gcpj(gcpj)
         else:
-            print("há pastas")
+            print(f'{gcpj} já está no sistema!')
+            self.notificacao.show_toast("Validador:", f"GCPJ: {gcpj} já está no sistema", duration=2)
     
     def armazenar_gcpj(self, processo):
         novo_gcpj = [processo]
 
         self.sheet_saida.append(novo_gcpj)
         self.planilha_saida.save("gcpjs_nao_processados.xlsx")
-        
-        print("Item armazenado com sucesso!")
-    
-if __name__ == "__main__":
+
+        print(f"{gcpj} armazenado com sucesso!")
+
+def main():
     try:
         automacao = Validador()
+        automacao.logar()
+
+        while automacao.linha < automacao.total_de_itens:
+            automacao.pesquisar()
+            automacao.scroll_page()
+            time.sleep(.5)
     except Exception as e:
         print(e)
-    
+
+if __name__ == "__main__":
+    main()    
