@@ -1,4 +1,5 @@
 import pandas as pd
+import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -19,6 +20,7 @@ class Validador:
         self.logar()
         self.pesquisar()
         self.scroll_page()
+        time.sleep(4)
         # self.achar_arquivos()
     
     def logar(self):
@@ -41,21 +43,30 @@ class Validador:
         print(f'Processo: {gcpj}')
 
         self.lupa = self.navegador.find_element("class name", "mdi-magnify").click()
-        WebDriverWait(self.navegador,7)
+        # WebDriverWait(self.navegador,7)
+        time.sleep(1)
 
         self.search_bar = self.navegador.find_element("id", "main-search")
         self.search_bar.click()
         self.search_bar.send_keys(str(gcpj) + Keys.ENTER)
 
-        
-        link_processo = self.navegador.find_element("partial link text", str(gcpj)) #link do processo
-        link_processo.click()
+        # time.sleep(7)
+        link_processo =("partial link text", str(gcpj)) #link do processo
+        try:
+            WebDriverWait(self.navegador, 10).until(
+                EC.presence_of_element_located(link_processo)
+            )
+            WebDriverWait(self.navegador,2).until(
+                EC.element_to_be_clickable(link_processo)
+            )
+        except:
+            print(f"Erro de conexão, não foi possível concluir a pesquisa. GCPJ: {gcpj}")
+            
+        self.navegador.find_element("partial link text", str(gcpj)).click()
                             
     def scroll_page(self):
         arquivos = self.navegador.find_element("link text", "Arquivos")
-        self.navegador.execute_script("arguments[0].scrollIntoView({block: 'center'})", arquivos)
-        espera = WebDriverWait(self.navegador, 5)
-        espera.until(EC.element_to_be_clickable(arquivos))
+        self.navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", arquivos)
 
     # def achar_arquivos(self):
     #     try:
