@@ -1,5 +1,6 @@
-import pandas as pd
 import time
+import pandas as pd
+from openpyxl import load_workbook, Workbook
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -13,10 +14,14 @@ class Validador:
         self.navegador.get("https://octopus.retake.com.br/entrar/?next=/dashboard/")
         self.navegador.maximize_window()
 
-        # Manipulação de Excel
-        self.df = pd.read_excel('banco_de_gcpj.xlsx', sheet_name='01')
-        self.total_de_itens = self.df.shape[0]
+        # Manipulação de Excel - ENTRADA - PANDAS
+        self.planilha_entrada = pd.read_excel('banco_de_gcpj.xlsx', sheet_name='01')
+        self.total_de_itens = self.planilha_entrada.shape[0]
         self.linha = 0
+
+        # Manipulação de Excel - SAIDA - OPENPYXL
+        self.planilha_saida = load_workbook("gcpjs_nao_processados.xlsx")
+        self.sheet_saida = self.planilha_saida['01']
         
         self.logar()
         self.pesquisar()
@@ -32,7 +37,7 @@ class Validador:
     def ponteiro(self):
         try:
             for _ in range(self.total_de_itens):
-                gcpj = self.df.at[self.linha, 'BRADESCO']
+                gcpj = self.planilha_entrada.at[self.linha, 'BRADESCO']
                 self.linha += 1
                 return gcpj
             
@@ -40,6 +45,7 @@ class Validador:
             print(f"Erro so processar Banco de dados Excel.\n{e}")
     
     def pesquisar(self):
+        global gcpj
         gcpj = self.ponteiro()
         print(f'Processo: {gcpj}')
 
@@ -80,31 +86,17 @@ class Validador:
         pastas = campo_de_pastas.find_elements(By.XPATH, "./*") #seleciona todas as pastas dentro do campo de pastas
 
         if not pastas:
-            print(f"Não há pastas")
+            self.armazenar_gcpj(gcpj)
         else:
             print("há pastas")
+    
+    def armazenar_gcpj(self, processo):
+        novo_gcpj = [processo]
 
-    
-    # def achar_arquivos(self):
-    #     try:
-    #         for item in self.arquivos:
-    #             if "Arquivos" in item.text:
-    #                 item.click()
-    #                 break
-
-    #         documentos_diversos = self.navegador.find_element_by_xpath((f'//span[contains(text(), "{self.texto1}")]'))
-    #         documentos_gcpj = self.navegador.find_element_by_xpath((f'//span[contains(text(), "{self.texto2}")]'))
-            
-    #     except:
-            # ...
-    
-    # def rodar_planilha(self):
-    #     #resgatar CGPJ da planilha excel
-    #     ...
-    
-    # def faltantes(self):
-    #     #armazenar GCPJ detectdos como faltantes em um arquivo TXT
-    #     ...        
+        self.sheet_saida.append(novo_gcpj)
+        self.planilha_saida.save("gcpjs_nao_processados.xlsx")
+        
+        print("Item armazenado com sucesso!")
     
 if __name__ == "__main__":
     try:
