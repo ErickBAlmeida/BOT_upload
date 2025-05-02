@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 
 class Validador:
     def __init__(self):
@@ -65,9 +66,25 @@ class Validador:
         self.navegador.find_element("partial link text", str(gcpj)).click()
                             
     def scroll_page(self):
-        arquivos = self.navegador.find_element("link text", "Arquivos")
-        self.navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", arquivos)
+        arquivos = ("link text", "Arquivos")
+        elemento = WebDriverWait(self.navegador, 10).until(
+            EC.presence_of_element_located(arquivos)
+        )
+        self.navegador.execute_script("arguments[0].scrollIntoView({block: 'center'})", elemento)
+        self.navegador.find_element("link text", "Arquivos").click()
 
+        time.sleep(2)
+        self.navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", elemento)
+
+        campo_de_pastas = self.navegador.find_element("id", "directory-tree")
+        pastas = campo_de_pastas.find_elements(By.XPATH, "./*") #seleciona todas as pastas dentro do campo de pastas
+
+        if not pastas:
+            print(f"Não há pastas")
+        else:
+            print("há pastas")
+
+    
     # def achar_arquivos(self):
     #     try:
     #         for item in self.arquivos:
