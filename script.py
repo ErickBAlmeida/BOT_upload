@@ -31,7 +31,7 @@ class Validador:
     
     def logar(self):
         self.navegador.find_element("id", "id_username").send_keys("erickalmeida@barros.adv.br")
-        self.navegador.find_element("id", "id_password").send_keys("@Videocassete21")
+        self.navegador.find_element("id", "id_password").send_keys("") # Local para senha
         self.navegador.find_element("class name", "submit-btn").click()
 
     def ponteiro(self):
