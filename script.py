@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from win10toast import ToastNotifier
+import chaves
 
 class Validador:
     def __init__(self):
@@ -30,8 +31,8 @@ class Validador:
         time.sleep(1)
     
     def logar(self):
-        self.navegador.find_element("id", "id_username").send_keys("erickalmeida@barros.adv.br")
-        self.navegador.find_element("id", "id_password").send_keys("") # Local para senha
+        self.navegador.find_element("id", "id_username").send_keys(chaves.email)
+        self.navegador.find_element("id", "id_password").send_keys(chaves.password) # Local para senha
         self.navegador.find_element("class name", "submit-btn").click()
 
     def ponteiro(self):
