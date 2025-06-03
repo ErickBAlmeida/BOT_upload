@@ -13,7 +13,7 @@ class Validador:
     def __init__(self):
         # Configurando Navegador
         self.navegador = webdriver.Chrome()
-        self.navegador.get("https://octopus.retake.com.br/entrar/?next=/dashboard/")
+        self.navegador.get(chaves.link)
         self.navegador.maximize_window()
 
         # Manipulação de Excel - ENTRADA - PANDAS
@@ -88,10 +88,20 @@ class Validador:
         
         if not pastas:
             self.armazenar_gcpj(gcpj)
+            return
         else:
             print(f'{gcpj} já está no sistema!')
+            self.checagem_de_arquivos()
             self.notificacao.show_toast("Validador:", f"GCPJ: {gcpj} já está no sistema", duration=2)
     
+    def checagem_de_arquivos(self):
+        campo_de_pastas = self.navegador.find_element("class name", "subdirectory-tree")
+        elementos = campo_de_pastas.find_elements(By.XPATH, './/span')
+        for elemento in elementos:
+            elemento_value = elemento.text
+            print(f"\n{elemento_value} está nesse GCPJ\n")
+        return
+
     def armazenar_gcpj(self, processo):
         novo_gcpj = [processo]
 
