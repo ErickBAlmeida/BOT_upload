@@ -1,4 +1,4 @@
-# BOT Anexador
+# BOT Upload Automático de Documentos
 
 Este projeto automatiza o processo de verificação e upload de anexos não cadastrados no sistema, utilizando Selenium para automação de navegador e integração com API para envio de documentos.
 
