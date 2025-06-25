@@ -1,6 +1,2 @@
-selenium/
-banco_de_gcpj.xlsx
-tempCodeRunnerFile.py
-gcpjs_nao_processados.xlsx
-chaves.py
-script copy.py
+.env
+__pycache__
