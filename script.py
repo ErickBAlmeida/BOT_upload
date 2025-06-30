@@ -51,13 +51,13 @@ class Validador:
         self.gcpj = next(self.ponteiro())
         print(f'Pesquisando processo: {self.gcpj}')
 
-        self.lupa = self.navegador.find_element("class name", "mdi-magnify").click()
+        self.navegador.find_element("class name", "mdi-magnify").click()
         time.sleep(1)
 
-        self.search_bar = self.navegador.find_element("id", "main-search")
-        self.search_bar.clear()
-        self.search_bar.click()
-        self.search_bar.send_keys(str(self.gcpj) + Keys.ENTER)
+        search_bar = self.navegador.find_element("id", "main-search")
+        search_bar.clear()
+        search_bar.click()
+        search_bar.send_keys(str(self.gcpj) + Keys.ENTER)
 
         link_processo =("partial link text", str(self.gcpj)) #link do processo
         
