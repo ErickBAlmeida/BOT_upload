@@ -107,7 +107,7 @@ class Validador:
         pastas_normalizadas = [s.text.strip().lower() for s in pastas]
         
         # checa se o texto possui pasta de anexos
-        if not 'documentos diversos' in pastas_normalizadas and not 'documentos gcpj' in pastas_normalizadas:
+        if not 'documentos diversos' in pastas_normalizadas and not 'documentos gcpj' in pastas_normalizadas and not 'documentação gcpj':
             print("\nO processo não possui pasta de anexos...")
             try:
                 print("Preparando para o upload de arquivos.")
@@ -127,7 +127,7 @@ class Validador:
             time.sleep(2)
             
             # checa se o texto possui pasta de anexos
-            if texto_pasta in ['documentos diversos', 'documentos gcpj']:
+            if texto_pasta in ['documentos diversos', 'documentos gcpj', 'documentação gcpj']:
                 num_de_anexados = int(total_de_arquivos[i].text)
                 print(f"\nPasta '{pasta.text.strip()}' possui {num_de_anexados} anexados e {len(os.listdir(self.caminho_anexos))} para anexar\n")
                 time.sleep(2)
