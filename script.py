@@ -72,6 +72,7 @@ class Validador:
             
         except:
             print(f"Erro de conexão, não foi possível concluir a pesquisa. GCPJ: {self.gcpj}")
+            raise
 
     def scroll_page(self):
 
