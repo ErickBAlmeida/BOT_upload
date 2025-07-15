@@ -29,7 +29,7 @@ Este projeto automatiza o processo de verificação e upload de anexos não cada
 3. Coloque os arquivos PDF a serem anexados na pasta `\Desktop\anexos\NOMEPROCESSO`.
 4. Execute o script principal:
     ```sh
-    python [script.py](http://_vscodecontentref_/0)
+    python script.py
     ```
 
 ## Observações
