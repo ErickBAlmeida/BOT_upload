@@ -23,7 +23,7 @@ Este projeto automatiza o processo de verificação e upload de anexos não cada
 
 1. Instale as dependências:
     ```sh
-    pip install selenium python-dotenv requests win10toast
+    pip install -r requirements.txt
     ```
 2. Configure o arquivo `.env` com as variáveis necessárias.
 3. Coloque os arquivos PDF a serem anexados na pasta `\Desktop\anexos\NOMEPROCESSO`.
